@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Calorías y Macronutrientes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .calculator {
+      max-width: 400px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calculadora de Calorías y Macronutrientes</h1>
+  <div class="calculator">
+    <label for="weight">Peso (kg):</label>
+    <input type="number" id="weight" placeholder="Ejemplo: 70">
+
+    <label for="height">Altura (cm):</label>
+    <input type="number" id="height" placeholder="Ejemplo: 170">
+
+    <label for="age">Edad:</label>
+    <input type="number" id="age" placeholder="Ejemplo: 25">
+
+    <label for="gender">Género:</label>
+    <select id="gender">
+      <option value="male">Hombre</option>
+      <option value="female">Mujer</option>
+    </select>
+
+    <label for="activity">Nivel de Actividad:</label>
+    <select id="activity">
+      <option value="1.2">Sedentario</option>
+      <option value="1.375">Poco Activo</option>
+      <option value="1.55">Moderadamente Activo</option>
+      <option value="1.725">Muy Activo</option>
+      <option value="1.9">Extremadamente Activo</option>
+    </select>
+
+    <button onclick="calculate()">Calcular</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      const weight = parseFloat(document.getElementById("weight").value);
+      const height = parseFloat(document.getElementById("height").value);
+      const age = parseInt(document.getElementById("age").value);
+      const gender = document.getElementById("gender").value;
+      const activity = parseFloat(document.getElementById("activity").value);
+
+      if (!weight || !height || !age) {
+        document.getElementById("result").innerHTML = "<p style='color: red;'>Por favor, llena todos los campos.</p>";
+        return;
+      }
+
+      const tmb =
+        gender === "male"
+          ? 10 * weight + 6.25 * height - 5 * age + 5
+          : 10 * weight + 6.25 * height - 5 * age - 161;
+
+      const calorias = tmb * activity;
+
+      const protein = (calorias * 0.2) / 4;
+      const fat = (calorias * 0.3) / 9;
+      const carbs = (calorias * 0.5) / 4;
+
+      document.getElementById("result").innerHTML = `
+        <h3>Resultados:</h3>
+        <p>Calorías diarias: <strong>${calorias.toFixed(2)} kcal</strong></p>
+        <p>Proteínas: <strong>${protein.toFixed(2)} g</strong></p>
+        <p>Grasas: <strong>${fat.toFixed(2)} g</strong></p>
+        <p>Carbohidratos: <strong>${carbs.toFixed(2)} g</strong></p>
+      `;
+    }
+  </script>
+</body>
+</html>
