@@ -9,80 +9,62 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: #f5f5f5;
         }
         .container {
             max-width: 600px;
             margin: 50px auto;
             padding: 20px;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 20px;
         }
         .form-group {
             margin-bottom: 15px;
         }
         input, select, button {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             font-size: 16px;
             margin: 5px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-sizing: border-box;
         }
         button {
             background-color: #007BFF;
             color: white;
-            font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
         button:hover {
             background-color: #0056b3;
         }
         .results {
             margin-top: 20px;
-            padding: 15px;
+            padding: 10px;
             border: 1px solid #ddd;
             background: #f9f9f9;
-            border-radius: 8px;
-        }
-        .results h3 {
-            margin-bottom: 10px;
-        }
-        .results p {
-            margin: 5px 0;
-            font-size: 16px;
-            color: #333;
+            border-radius: 5px;
         }
         .error {
             color: red;
             font-weight: bold;
-            margin-top: 10px;
-            text-align: center;
         }
         .disclaimer {
             font-size: 14px;
             color: #777;
             margin-top: 10px;
         }
-        .highlight-message {
-            margin-top: 20px;
-            padding: 15px;
-            background: linear-gradient(90deg, #ff9a9e, #fad0c4);
-            border: 2px solid #ff6f61;
-            border-radius: 10px;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
+        .highlight {
+            background-color: #ffffe0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ffdd57;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
         }
     </style>
 </head>
@@ -91,7 +73,7 @@
         <h1>Calculadora de Calorías y Macronutrientes</h1>
         <form id="calorie-form">
             <div class="form-group">
-                <input type="number" id="weight" placeholder="Peso (kg)" required>
+                <input type="number" id="weight" placeholder="Peso actual (kg)" required>
             </div>
             <div class="form-group">
                 <input type="number" id="height" placeholder="Altura (cm)" required>
@@ -117,6 +99,9 @@
                 </select>
             </div>
             <div class="form-group">
+                <input type="number" id="goal-weight" placeholder="Peso objetivo (kg)" required>
+            </div>
+            <div class="form-group">
                 <button type="submit">Calcular</button>
             </div>
         </form>
@@ -128,8 +113,13 @@
             <p id="fats"></p>
             <p id="carbs"></p>
             
-            <p class="highlight-message">
-                ¡Recuerda! Consulta con un nutricionista para personalizar tus objetivos y alcanzar el bienestar que mereces.
+            <div class="highlight">
+                ¡Ahora tienes un plan! Estas son las calorías y macronutrientes ideales para alcanzar tu peso objetivo.  
+                Recuerda: los cambios pequeños y constantes hacen la diferencia.
+            </div>
+
+            <p class="disclaimer">
+                <strong>Nota:</strong> Esta calculadora proporciona estimaciones aproximadas. Consulta a un nutricionista para un plan personalizado.
             </p>
         </div>
         
@@ -138,39 +128,52 @@
 
     <script>
         document.getElementById('calorie-form').addEventListener('submit', function(e) {
-            e.preventDefault(); 
+            e.preventDefault();
 
+            // Obtener valores del formulario
             const weight = parseFloat(document.getElementById('weight').value);
             const height = parseFloat(document.getElementById('height').value);
             const age = parseInt(document.getElementById('age').value);
             const gender = document.getElementById('gender').value;
             const activityLevel = parseFloat(document.getElementById('activity-level').value);
+            const goalWeight = parseFloat(document.getElementById('goal-weight').value);
 
-            if (!weight || !height || !age || !gender || !activityLevel) {
+            // Validar que los campos no estén vacíos
+            if (!weight || !height || !age || !gender || !activityLevel || !goalWeight) {
                 document.getElementById('error-message').textContent = "Por favor, completa todos los campos.";
                 return;
             }
 
-            document.getElementById('error-message').textContent = "";
+            document.getElementById('error-message').textContent = ""; // Limpiar mensaje de error
 
+            // Calcular TMB (Tasa Metabólica Basal) para peso actual
             let tmb;
             if (gender === 'male') {
                 tmb = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
-            } else {
+            } else if (gender === 'female') {
                 tmb = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
             }
 
-            const totalCalories = tmb * activityLevel;
+            // Calcular TMB para el peso objetivo
+            const goalTMB = gender === 'male' 
+                ? 88.362 + (13.397 * goalWeight) + (4.799 * height) - (5.677 * age)
+                : 447.593 + (9.247 * goalWeight) + (3.098 * height) - (4.330 * age);
 
-            const protein = (totalCalories * 0.30) / 4;
-            const fat = (totalCalories * 0.25) / 9;
-            const carbs = (totalCalories * 0.45) / 4;
+            // Calcular calorías totales para el peso objetivo
+            const totalCalories = goalTMB * activityLevel;
 
-            document.getElementById('calories').textContent = `Calorías diarias recomendadas: ${Math.round(totalCalories)} kcal`;
+            // Calcular los macronutrientes
+            const protein = (totalCalories * 0.30) / 4; // 30% de proteínas
+            const fat = (totalCalories * 0.25) / 9; // 25% de grasas
+            const carbs = (totalCalories * 0.45) / 4; // 45% de carbohidratos
+
+            // Mostrar los resultados
+            document.getElementById('calories').textContent = `Calorías diarias recomendadas para tu peso objetivo: ${Math.round(totalCalories)} kcal`;
             document.getElementById('proteins').textContent = `Proteínas: ${Math.round(protein)} g`;
             document.getElementById('fats').textContent = `Grasas: ${Math.round(fat)} g`;
             document.getElementById('carbs').textContent = `Carbohidratos: ${Math.round(carbs)} g`;
 
+            // Mostrar la sección de resultados
             document.getElementById('results').style.display = 'block';
         });
     </script>
