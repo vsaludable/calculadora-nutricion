@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Calorías</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Vinculamos el archivo CSS -->
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Calorías y Macronutrientes</h1>
+        <form id="calorie-form">
+            <input type="number" id="weight" placeholder="Peso (kg)" required>
+            <input type="number" id="height" placeholder="Altura (cm)" required>
+            <input type="number" id="age" placeholder="Edad (años)" required>
+            <select id="gender" required>
+                <option value="">Selecciona el género</option>
+                <option value="male">Hombre</option>
+                <option value="female">Mujer</option>
+            </select>
+            <select id="activity-level" required>
+                <option value="">Selecciona el nivel de actividad</option>
+                <option value="1.2">Sedentario</option>
+                <option value="1.375">Poco activo</option>
+                <option value="1.55">Moderadamente activo</option>
+                <option value="1.725">Muy activo</option>
+                <option value="1.9">Extremadamente activo</option>
+            </select>
+            <button type="submit">Calcular</button>
+        </form>
+        
+        <div class="results" id="results" style="display:none;">
+            <h3>Resultados:</h3>
+            <p id="calories"></p>
+            <p id="proteins"></p>
+            <p id="fats"></p>
+            <p id="carbs"></p>
+            
+            <!-- Mensaje adicional sobre nutricionista -->
+            <p class="disclaimer">
+                <strong>Recuerda:</strong> Esta calculadora solo proporciona un parámetro aproximado. No reemplaza la consulta con un nutricionista. Consulta a un experto para un plan personalizado.
+            </p>
+        </div>
+        
+        <p class="error" id="error-message"></p>
+    </div>
+
+    <!-- Vinculamos el archivo JS al final del archivo HTML -->
+    <script src="calculadora.js"></script>
+</body>
+</html>
