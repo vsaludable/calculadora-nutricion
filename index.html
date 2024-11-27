@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Calorías</title>
+    <title>Calculadora de Calorías y Macronutrientes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,17 +54,15 @@
             font-weight: bold;
         }
         .disclaimer {
-            font-size: 14px;
-            color: #777;
-            margin-top: 10px;
-        }
-        .highlight {
-            background-color: #ffffe0;
-            padding: 10px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #e74c3c;
+            padding: 15px;
+            margin-top: 20px;
             border-radius: 5px;
-            border: 1px solid #ffdd57;
-            text-align: center;
             font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -99,7 +97,14 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="number" id="goal-weight" placeholder="Peso objetivo (kg)" required>
+                <input type="number" id="target-weight" placeholder="Peso objetivo (kg)" required>
+            </div>
+            <div class="form-group">
+                <select id="goal" required>
+                    <option value="">Selecciona tu objetivo</option>
+                    <option value="lose">Perder peso</option>
+                    <option value="gain">Ganar peso</option>
+                </select>
             </div>
             <div class="form-group">
                 <button type="submit">Calcular</button>
@@ -112,70 +117,15 @@
             <p id="proteins"></p>
             <p id="fats"></p>
             <p id="carbs"></p>
-            
-            <div class="highlight">
-                ¡Ahora tienes un plan! Estas son las calorías y macronutrientes ideales para alcanzar tu peso objetivo.  
-                Recuerda: los cambios pequeños y constantes hacen la diferencia.
-            </div>
-
-            <p class="disclaimer">
-                <strong>Nota:</strong> Esta calculadora proporciona estimaciones aproximadas. Consulta a un nutricionista para un plan personalizado.
-            </p>
         </div>
         
         <p class="error" id="error-message"></p>
+
+        <p class="disclaimer">
+            <strong>Importante:</strong> Los resultados de esta calculadora son solo una estimación general basada en los datos proporcionados. No deben considerarse como una recomendación médica o nutricional profesional. Es esencial consultar con un nutricionista o médico antes de realizar cualquier cambio significativo en tu dieta o rutina de ejercicios.
+        </p>
     </div>
 
-    <script>
-        document.getElementById('calorie-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Obtener valores del formulario
-            const weight = parseFloat(document.getElementById('weight').value);
-            const height = parseFloat(document.getElementById('height').value);
-            const age = parseInt(document.getElementById('age').value);
-            const gender = document.getElementById('gender').value;
-            const activityLevel = parseFloat(document.getElementById('activity-level').value);
-            const goalWeight = parseFloat(document.getElementById('goal-weight').value);
-
-            // Validar que los campos no estén vacíos
-            if (!weight || !height || !age || !gender || !activityLevel || !goalWeight) {
-                document.getElementById('error-message').textContent = "Por favor, completa todos los campos.";
-                return;
-            }
-
-            document.getElementById('error-message').textContent = ""; // Limpiar mensaje de error
-
-            // Calcular TMB (Tasa Metabólica Basal) para peso actual
-            let tmb;
-            if (gender === 'male') {
-                tmb = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
-            } else if (gender === 'female') {
-                tmb = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
-            }
-
-            // Calcular TMB para el peso objetivo
-            const goalTMB = gender === 'male' 
-                ? 88.362 + (13.397 * goalWeight) + (4.799 * height) - (5.677 * age)
-                : 447.593 + (9.247 * goalWeight) + (3.098 * height) - (4.330 * age);
-
-            // Calcular calorías totales para el peso objetivo
-            const totalCalories = goalTMB * activityLevel;
-
-            // Calcular los macronutrientes
-            const protein = (totalCalories * 0.30) / 4; // 30% de proteínas
-            const fat = (totalCalories * 0.25) / 9; // 25% de grasas
-            const carbs = (totalCalories * 0.45) / 4; // 45% de carbohidratos
-
-            // Mostrar los resultados
-            document.getElementById('calories').textContent = `Calorías diarias recomendadas para tu peso objetivo: ${Math.round(totalCalories)} kcal`;
-            document.getElementById('proteins').textContent = `Proteínas: ${Math.round(protein)} g`;
-            document.getElementById('fats').textContent = `Grasas: ${Math.round(fat)} g`;
-            document.getElementById('carbs').textContent = `Carbohidratos: ${Math.round(carbs)} g`;
-
-            // Mostrar la sección de resultados
-            document.getElementById('results').style.display = 'block';
-        });
-    </script>
+    <script src="calculadora.js"></script>
 </body>
 </html>
